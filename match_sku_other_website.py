@@ -1,3 +1,7 @@
+#This program grabs SKU from one website (the one we're testing) and checks 
+#if an item with the same SKU exists on the other website (the one we're testing against).
+#The purpose is to automate the catalog check when launching a new website.
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
