@@ -1,3 +1,7 @@
+#The program gets SKU from the 1st website (link is an input),
+#search the same SKU on the 2nd website, go to the item's page
+#and compares descriptions on both pages.
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -12,16 +16,16 @@ def find_detail_page(input_sku):
         sku_text = driver.find_element(By.CSS_SELECTOR, '.catalog-card__article').text
         #print(sku_text)
         if sku_text == search_string:
-            print("Артикул найден, первый в списке")
+            print("SKU is the first search result")
             WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'a.catalog-card__image'))).click()
         else:
-            print("Первым идет другой артикул")
+            print("The first search result has a different SKU")
        
     except NoSuchElementException:
-        print("Элемент не найден")  
+        print("Element not found")  
 
 #Get to ERM CZ with the input link
-website_erm = input("Ссылка на CZ ERM: ")
+website_erm = input("Link to CZ ERM: ")
 driver = webdriver.Chrome()
 driver.get(website_erm)
 
@@ -51,14 +55,14 @@ big_text_lev = driver.find_element(By.CSS_SELECTOR, "div.wysiwyg.wysiwyg_init").
 #print(big_text_erm)
 
 if intro_text_erm == intro_text_lev:
-    print("Краткое описание совпадает")
+    print("Short descriptions match")
 else:
-    print("ОШИБКА! Краткое описание не совпадает")
+    print("ERROR! Short descriptions don't match")
 
 if big_text_erm == big_text_lev:
-    print("Полное описание совпадает")
+    print("Full descriptions match")
 else:
-    print("ОШИБКА! Полное описание не совпадает")
+    print("ERROR! Full descriptions don't match")
     
 # Close the browser
 driver.quit()
