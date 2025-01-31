@@ -1,3 +1,6 @@
+#A script that goes to the next page of a section of a catalog.
+#It's working unreliably, so I'd like to improve it in the future (got a few ideas)
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
