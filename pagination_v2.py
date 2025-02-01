@@ -1,3 +1,6 @@
+#Updated version of the pagination function. 
+#It manipulates the url instead of clicking on the button, and I like it better
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
