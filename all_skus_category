@@ -1,0 +1,77 @@
+#Working on getting all the SKUs from 1 category (to later go through the whole catalogue)
+#Currenty isn't working properly as it goes to page 1 again after page 2
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.support import expected_conditions as EC
+import time
+ 
+website_erm = input("Ссылка на категорию CZ ERM: ")
+driver = webdriver.Chrome()
+ 
+def load_page(url):
+    driver.get(url)
+ 
+def parse_skus():
+    skus = []
+    while True:
+        time.sleep(1)
+        elems = driver.find_elements(By.CSS_SELECTOR, ".product-card__article")
+        emptyElem = None
+        for el in elems:
+            if el.text == '':
+                emptyElem = el
+                #print(emptyElem.text)
+                break
+            new_sku = el.text[4:]
+            if new_sku not in skus:
+                skus.append(new_sku)
+        if emptyElem is None:
+            break
+        driver.execute_script("arguments[0].scrollIntoView(true)", emptyElem)
+        print("retrying")
+    return(skus)
+    #print("Найдено " + str(len(skus)) + " товаров")
+ 
+def detect_next_page_button(my_link):
+    driver.get(my_link)
+    try:
+        elems = driver.find_elements(By.CSS_SELECTOR, "div.pagination__list a.btn")
+        current_page = driver.find_element(By.CSS_SELECTOR, "div.pagination__list a.btn.btn-secondary.active").text
+        #print(len(elems))
+        if int(current_page) < len(elems):
+            return(True)
+        else:
+            return(False)            
+    except NoSuchElementException:
+        return(False)
+ 
+def go_to_next_page(some_url, page_num): #we'll use it only when we're sure there is another page
+    next_page_link = some_url + "/?PAGEN_1=" + str(page_num)
+    #print(next_page_link)
+    driver.get(next_page_link)
+ 
+#print(detect_next_page_button(website_erm))
+ 
+#blabla = "https://cz.ermenrich.com/catalogue/pasmova-meridla/laserove-merice/?PAGEN_1=2"
+#print(detect_next_page_button(blabla))
+ 
+def main(url):
+    load_page(url)
+    all_skus = []
+    page = 1
+    while True:
+        page_skus = parse_skus()
+        print("page " + str(page) + " contains skus: ", page_skus)
+        for sku in page_skus:
+            all_skus.append(sku)
+        if detect_next_page_button(url) == False:
+            break
+        page += 1
+        go_to_next_page(url, page)
+    print("All SKUs: " + all_skus)
+ 
+main(website_erm)
